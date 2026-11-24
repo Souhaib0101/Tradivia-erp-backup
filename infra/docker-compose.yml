@@ -1,0 +1,3 @@
+# Docker is intentionally unsupported until tested images and a LibreOffice
+# PDF workflow are provided. See infra/README.md.
+services: {}

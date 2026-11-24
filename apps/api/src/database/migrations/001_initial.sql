@@ -1,0 +1,5 @@
+CREATE TABLE users(id INTEGER PRIMARY KEY,username TEXT UNIQUE NOT NULL,password_hash TEXT NOT NULL,role TEXT NOT NULL DEFAULT 'user',active INTEGER NOT NULL DEFAULT 1,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE clients(id INTEGER PRIMARY KEY,name TEXT NOT NULL,type TEXT NOT NULL CHECK(type IN ('societe','physique')),ice TEXT,cin TEXT,address TEXT,phone TEXT,email TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE invoices(id INTEGER PRIMARY KEY,number TEXT UNIQUE NOT NULL,client_id INTEGER REFERENCES clients(id),designation TEXT NOT NULL,quantity_kg REAL NOT NULL,unit_price_ttc REAL NOT NULL,amount_ht REAL NOT NULL,vat REAL NOT NULL,total_ttc REAL NOT NULL,rounding_adjustment REAL NOT NULL DEFAULT 0,status TEXT NOT NULL DEFAULT 'En attente',issued_at TEXT NOT NULL);
+CREATE TABLE containers(id INTEGER PRIMARY KEY,reference TEXT UNIQUE NOT NULL,supplier TEXT,status TEXT NOT NULL DEFAULT 'En transit',eta TEXT,notes TEXT);
+CREATE TABLE expenses(id INTEGER PRIMARY KEY,label TEXT NOT NULL,category TEXT NOT NULL,amount REAL NOT NULL,expense_date TEXT NOT NULL,container_id INTEGER REFERENCES containers(id));

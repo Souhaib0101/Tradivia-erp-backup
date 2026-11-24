@@ -1,0 +1,48 @@
+@startuml
+title Diagramme global des modules - Tradivia System
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Utilisateur" as User
+
+component "Frontend React / Vite" as Web {
+  [Authentification]
+  [Factures]
+  [Clients]
+  [Conteneurs]
+  [Charges]
+  [Comptabilite]
+  [Anomalies]
+  [Theme clair / sombre]
+}
+
+component "API Express" as API {
+  [Routes REST]
+  [Middleware JWT]
+  [Calculs factures]
+  [Calculs comptables]
+  [Moteur anomalies]
+}
+
+database "SQLite\ntradivia.db" as DB
+folder "Uploads conteneurs" as Uploads
+component "Workers Python" as Workers {
+  [fill_template.py]
+  [merge_invoices.py]
+}
+artifact "Modeles DOCX" as Templates
+artifact "DOCX / PDF generes" as Outputs
+component "Microsoft Word /\nLibreOffice" as Office
+
+User --> Web
+Web --> API : HTTP / JSON
+API --> DB : better-sqlite3
+API --> Uploads : fichiers joints
+API --> Workers : generation documents
+Workers --> Templates : lecture modele
+Workers --> Office : conversion PDF
+Workers --> Outputs : ecriture
+API --> Outputs : telechargement
+
+@enduml

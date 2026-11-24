@@ -1,0 +1,1 @@
+import {login} from './auth.service.js'; export const loginController=async(req,res,next)=>{try{res.json(await login(req.body));}catch(e){next(e);}}; export const meController=(req,res)=>res.json({user:req.user});

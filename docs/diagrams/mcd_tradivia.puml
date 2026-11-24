@@ -1,0 +1,119 @@
+@startuml
+title Extrait du MCD - Entites principales de Tradivia System
+
+skinparam linetype ortho
+skinparam shadowing false
+hide circle
+
+entity "CLIENT" as CLIENT {
+  *id : integer <<PK>>
+  --
+  name : text
+  client_type : text
+  ice : text
+  cin : text
+  address : text
+  phone : text
+  email : text
+}
+
+entity "FACTURE" as FACTURE {
+  *id : integer <<PK>>
+  --
+  numero : text <<unique>>
+  lieu : text
+  date : text
+  qte_kg : real
+  designation : text
+  pu_ttc : real
+  pt_ttc : real
+  montant_ht : real
+  tva : real
+  calc_type : text
+  total_ttc_saisi : real
+  mode_paiement : text
+  ajustement_arrondi : real
+  paid : integer
+  clientId : integer <<FK>>
+}
+
+entity "CONTAINER" as CONTAINER {
+  *id : integer <<PK>>
+  --
+  numero : text <<unique>>
+  statut : text
+  fournisseur : text
+  date_depart : text
+  date_arrivee : text
+  poids_commande : real
+  poids_recu : real
+}
+
+entity "CONTAINER_DOCUMENT" as DOCUMENT {
+  *id : integer <<PK>>
+  --
+  container_id : integer <<FK>>
+  original_name : text
+  stored_name : text
+  mime_type : text
+  file_size : integer
+  uploaded_at : text
+}
+
+entity "CHARGE" as CHARGE {
+  *id : integer <<PK>>
+  --
+  date : text
+  categorie : text
+  libelle : text
+  montant_ht : real
+  tva : real
+  montant_ttc : real
+  deductible : integer
+}
+
+entity "EXERCICE_COMPTABLE" as EXERCICE {
+  *id : integer <<PK>>
+  --
+  annee : integer <<unique>>
+  date_debut : text
+  date_fin : text
+  statut : text
+  ca_total : real
+  charges_totales : real
+  resultat_net : real
+  is_du : real
+  cm_du : real
+  css_du : real
+  tva_collectee : real
+  tva_deductible : real
+  tva_a_payer : real
+  patente_du : real
+}
+
+CLIENT ||--o{ FACTURE : "emet / recoit"
+CONTAINER ||--o{ DOCUMENT : "contient"
+EXERCICE .. FACTURE : "agregation par annee"
+EXERCICE .. CHARGE : "agregation par annee"
+
+note right of CLIENT
+client_type =
+"societe" ou "physique".
+Le CIN est facultatif
+pour les personnes physiques.
+end note
+
+note right of CHARGE
+deductible = 1 signifie que
+la TVA peut entrer dans le
+calcul de TVA deductible.
+end note
+
+note bottom
+Extrait du MCD : les tables techniques
+users et ordres de virement existent
+dans la base, mais ne sont pas affichees
+pour garder le schema lisible sur A4.
+end note
+
+@enduml

@@ -1,0 +1,1 @@
+import {Router} from 'express';import {loginController,meController} from './auth.controller.js';import {authenticate} from '../../shared/middleware/authenticate.js';export const authRoutes=Router();authRoutes.post('/login',loginController);authRoutes.get('/me',authenticate,meController);

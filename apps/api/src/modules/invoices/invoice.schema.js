@@ -1,0 +1,1 @@
+import {z} from 'zod';export const createInvoice=z.object({number:z.string().min(1),designation:z.string().min(1),quantityKg:z.coerce.number().positive(),unitPriceTtc:z.coerce.number().positive(),clientId:z.number().int().optional()});

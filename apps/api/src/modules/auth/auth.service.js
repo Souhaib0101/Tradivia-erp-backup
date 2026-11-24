@@ -1,0 +1,2 @@
+import bcrypt from 'bcryptjs';import jwt from 'jsonwebtoken';import {findByUsername} from './auth.repository.js';import {env} from '../../config/env.js';import {AppError} from '../../shared/errors/AppError.js';
+export async function login({username,password}){const user=findByUsername(username);if(!user||!await bcrypt.compare(password??'',user.password_hash))throw new AppError('Identifiants invalides.',401);return{token:jwt.sign({sub:user.id,role:user.role},env.jwtSecret,{expiresIn:'8h'}),user:{id:user.id,username:user.username,role:user.role}};}

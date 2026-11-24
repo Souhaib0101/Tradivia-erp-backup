@@ -1,0 +1,17 @@
+/* Keep this file limited to a neutral document reset. The application owns
+   its layout through scoped classes such as .shell, .sidebar and .main.
+   Element-level main/aside/section rules used by the old prototype leaked
+   into the current dashboard and forced its page content into a flex row. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}

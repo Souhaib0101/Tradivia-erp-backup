@@ -1,0 +1,60 @@
+@startuml
+title Extrait du diagramme de cas d'utilisation - Tradivia System
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam actorStyle awesome
+
+actor "Utilisateur" as User
+actor "Administrateur" as Admin
+Admin --|> User
+
+rectangle "Tradivia System" {
+  usecase "Se connecter" as UC_Login
+  usecase "Gerer les utilisateurs" as UC_Users
+
+  usecase "Gerer les clients" as UC_Clients
+  usecase "Gerer les personnes physiques" as UC_Physical
+
+  usecase "Creer une facture" as UC_Invoice
+  usecase "Calculer HT, TVA et TTC" as UC_Calc
+  usecase "Filtrer les factures" as UC_Filter
+  usecase "Exporter les factures filtrees" as UC_ExportInvoices
+
+  usecase "Suivre les conteneurs" as UC_Containers
+  usecase "Joindre des documents" as UC_Docs
+
+  usecase "Enregistrer les charges" as UC_Charges
+  usecase "Generer un ordre de virement" as UC_Transfer
+
+  usecase "Consulter la comptabilite" as UC_Accounting
+  usecase "Calculer TVA collectee / deductible" as UC_Tva
+
+  usecase "Consulter les anomalies" as UC_Anomalies
+}
+
+User --> UC_Login
+User --> UC_Clients
+User --> UC_Invoice
+User --> UC_Filter
+User --> UC_Containers
+User --> UC_Charges
+User --> UC_Transfer
+User --> UC_Accounting
+User --> UC_Anomalies
+
+Admin --> UC_Users
+
+UC_Clients .> UC_Physical : include
+UC_Invoice .> UC_Calc : include
+UC_Filter .> UC_ExportInvoices : export du resultat filtre
+UC_Containers .> UC_Docs : include
+UC_Accounting .> UC_Tva : include
+
+note bottom of UC_Anomalies
+Extrait : doublons, TVA,
+poids, ICE/CIN, RIB et charges.
+end note
+
+@enduml

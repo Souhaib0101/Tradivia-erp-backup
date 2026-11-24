@@ -1,0 +1,103 @@
+@startuml
+title Extrait du diagramme de classes - Domaine facturation et controle
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide circle
+
+class Client {
+  +id : Integer
+  +name : String
+  +client_type : String
+  +ice : String
+  +cin : String
+  +address : String
+  +phone : String
+  +email : String
+  +isSociete()
+  +isPhysique()
+}
+
+class Facture {
+  +id : Integer
+  +numero : String
+  +lieu : String
+  +date : Date
+  +designation : String
+  +qte_kg : Decimal
+  +pu_ttc : Decimal
+  +pt_ttc : Decimal
+  +montant_ht : Decimal
+  +tva : Decimal
+  +calc_type : String
+  +total_ttc_saisi : Decimal
+  +ajustement_arrondi : Decimal
+  +paid : Boolean
+  +calculerMontants()
+  +marquerPayee()
+}
+
+class Charge {
+  +id : Integer
+  +date : Date
+  +categorie : String
+  +libelle : String
+  +montant_ht : Decimal
+  +tva : Decimal
+  +montant_ttc : Decimal
+  +fournisseur : String
+  +mode_paiement : String
+  +deductible : Boolean
+  +calculerTvaDeductible()
+}
+
+class ExerciceComptable {
+  +id : Integer
+  +annee : Integer
+  +date_debut : Date
+  +date_fin : Date
+  +statut : String
+  +ca_total : Decimal
+  +charges_totales : Decimal
+  +resultat_net : Decimal
+  +tva_collectee : Decimal
+  +tva_deductible : Decimal
+  +tva_a_payer : Decimal
+  +cloturer()
+}
+
+class AnomalyReport {
+  +generated_at : DateTime
+  +total : Integer
+  +critical : Integer
+  +warning : Integer
+  +build()
+}
+
+class Anomaly {
+  +id : String
+  +type : String
+  +severity : String
+  +title : String
+  +message : String
+  +entity_type : String
+  +entity_id : Integer
+  +action_page : String
+}
+
+Client "1" -- "0..*" Facture : possede
+AnomalyReport "1" -- "0..*" Anomaly : contient
+Anomaly ..> Facture : controle
+Anomaly ..> Client : controle
+Anomaly ..> Charge : controle
+ExerciceComptable ..> Facture : calcule CA / TVA collectee
+ExerciceComptable ..> Charge : calcule charges / TVA deductible
+
+note bottom
+Extrait volontairement limite aux classes centrales :
+clients, factures, charges, exercice comptable et anomalies.
+Les conteneurs et virements peuvent etre presentes
+dans des diagrammes separes si necessaire.
+end note
+
+@enduml

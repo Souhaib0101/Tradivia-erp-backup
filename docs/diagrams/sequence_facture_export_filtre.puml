@@ -1,0 +1,40 @@
+@startuml
+title Diagramme de sequence - Filtrage et export des factures
+
+autonumber
+skinparam shadowing false
+
+actor "Utilisateur" as User
+participant "Interface React" as UI
+participant "Service API" as ApiService
+participant "API Express" as API
+database "SQLite" as DB
+participant "Worker Python\nmerge_invoices.py" as Worker
+participant "Word / LibreOffice" as Office
+
+User -> UI : Ouvre la page Factures
+UI -> ApiService : GET /api/factures
+ApiService -> API : Requete avec JWT
+API -> DB : SELECT * FROM factures ORDER BY date DESC
+DB --> API : Liste complete
+API --> ApiService : JSON factures
+ApiService --> UI : Donnees
+
+User -> UI : Saisit des filtres\n(annee, mois, client, statut...)
+UI -> UI : Calcule les factures visibles
+UI -> UI : Recalcule Total TTC,\nTotal HT et En attente\nsur le filtre actif
+
+User -> UI : Clique sur Export groupé
+UI -> ApiService : POST /api/factures/export-group\nids = factures visibles
+ApiService -> API : Envoi des ids filtres
+API -> DB : SELECT * FROM factures WHERE id IN (...)
+DB --> API : Factures selectionnees
+API -> Worker : Genere DOCX/PDF groupe
+Worker -> Office : Conversion PDF si demandee
+Office --> Worker : Document final
+Worker --> API : Chemin du fichier genere
+API --> ApiService : Fichier telechargeable
+ApiService --> UI : Telechargement
+UI --> User : Fichier contenant uniquement\nles factures filtrees
+
+@enduml

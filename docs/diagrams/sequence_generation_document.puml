@@ -1,0 +1,40 @@
+@startuml
+title Diagramme de sequence - Generation d'un document DOCX / PDF
+
+autonumber
+skinparam shadowing false
+
+actor "Utilisateur" as User
+participant "Interface React" as UI
+participant "API Express" as API
+database "SQLite" as DB
+participant "Worker Python\nfill_template.py" as Worker
+participant "Modele DOCX" as Template
+participant "Microsoft Word /\nLibreOffice" as Office
+collections "Dossier temporaire" as Tmp
+
+User -> UI : Demande l'export\nFacture ou Ordre de virement
+UI -> API : POST /api/invoice\nou GET /api/ordres.../export
+API -> DB : Lire les donnees metier
+DB --> API : Donnees facture / ordre
+
+API -> Tmp : Creer un repertoire temporaire
+API -> Worker : Lancer le remplissage du modele
+Worker -> Template : Lire le fichier DOCX
+Worker -> Worker : Remplacer les variables\nmeme dans les tableaux
+Worker -> Tmp : Ecrire le DOCX genere
+
+alt Export PDF demande
+  Worker -> Office : Convertir DOCX en PDF
+  Office --> Worker : PDF genere
+  Worker -> API : Retourne le fichier PDF
+else Export DOCX demande
+  Worker -> API : Retourne le fichier DOCX
+end
+
+API -> API : Verifier existence et signature PDF
+API --> UI : Reponse fichier
+UI --> User : Telechargement du document
+API -> Tmp : Nettoyer les fichiers temporaires
+
+@enduml

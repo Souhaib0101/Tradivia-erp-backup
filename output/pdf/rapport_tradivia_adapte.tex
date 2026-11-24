@@ -1,0 +1,762 @@
+% !TeX program = pdflatex
+% Rapport de projet professionnel - Tradivia System
+% Version entièrement corrigée, adaptée au projet réel et humanisée - 26 août 2026
+% Compilation conseillée : pdflatex, puis pdflatex une seconde fois.
+\documentclass[12pt,a4paper,oneside]{report}
+
+% -----------------------------------------------------------------------------
+% Langue, encodage et typographie
+% -----------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english,french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\emergencystretch}{3em}
+
+% -----------------------------------------------------------------------------
+% Mise en page
+% -----------------------------------------------------------------------------
+\usepackage[a4paper,top=2.4cm,bottom=2.4cm,left=2.8cm,right=2.4cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{emptypage}
+\usepackage{lastpage}
+\usepackage{csquotes}
+
+% -----------------------------------------------------------------------------
+% Tableaux, figures et code
+% -----------------------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage{pgfgantt}
+
+% -----------------------------------------------------------------------------
+% Mathématiques, liens et glossaire
+% -----------------------------------------------------------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{bookmark}
+
+% -----------------------------------------------------------------------------
+% Informations à personnaliser
+% -----------------------------------------------------------------------------
+\newcommand{\Etablissement}{Nom de l'établissement}
+\newcommand{\Departement}{Département Informatique}
+\newcommand{\Filiere}{Filière Génie Logiciel et Systèmes d'Information}
+\newcommand{\Auteur}{Nom et prénom de l'étudiant(e)}
+\newcommand{\Encadrant}{Nom de l'encadrant(e)}
+\newcommand{\AnneeUniversitaire}{2025--2026}
+\newcommand{\Entreprise}{TRADIVIA SARL}
+\newcommand{\TitreProjet}{Conception et réalisation d'une plateforme de gestion commerciale et documentaire pour TRADIVIA}
+
+% -----------------------------------------------------------------------------
+% Couleurs et styles (Identité visuelle de Tradivia)
+% -----------------------------------------------------------------------------
+\definecolor{tradiviablue}{HTML}{123B5D}
+\definecolor{tradiviagold}{HTML}{D79A2B}
+\definecolor{lightblue}{HTML}{EAF2F8}
+\definecolor{codegray}{HTML}{F5F5F5}
+\definecolor{navy}{HTML}{26313F}
+\definecolor{indigo}{HTML}{5368D9}
+\definecolor{teal}{HTML}{31877E}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=tradiviablue,
+  urlcolor=teal,
+  citecolor=tradiviablue,
+  pdftitle={Rapport Tradivia System},
+  pdfauthor={\Auteur}
+}
+
+\setlist[itemize]{label=\textcolor{tradiviagold}{\textbullet},leftmargin=1.2cm}
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{tradiviablue}}
+  {\filleft\Large Chapitre \thechapter}
+  {1ex}{\titlerule\vspace{1ex}\Huge}
+\titleformat{\section}{\Large\bfseries\color{tradiviablue}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{tradiviablue}}{\thesubsection}{0.8em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Tradivia System}
+\fancyhead[R]{\small\ifnum\value{chapter}>0 Chapitre \thechapter\fi}
+\fancyfoot[C]{Page \thepage\ sur \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{16pt}
+
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{tradiviablue},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\important}[1]{\textcolor{tradiviablue}{\textbf{#1}}}
+\newcommand{\sourcefile}[1]{\path{#1}}
+
+% Gestion des captures d'écran
+\graphicspath{{figures/}}
+\newcommand{\projectfigure}[3][6.2cm]{%
+  \begin{figure}[H]\centering
+  \IfFileExists{figures/#2}{%
+    \includegraphics[width=0.92\textwidth,height=#1,keepaspectratio]{#2}%
+  }{%
+    \fcolorbox{tradiviablue}{white}{\begin{minipage}[c][#1][c]{0.88\textwidth}
+      \centering\color{gray}\large Espace réservé à une capture d'écran
+    \end{minipage}}%
+  }
+  \caption{#3}
+  \end{figure}}
+
+\newcommand{\capturespace}[2][6.2cm]{%
+  \begin{figure}[H]\centering
+  \fcolorbox{tradiviablue}{white}{\begin{minipage}[c][#1][c]{0.88\textwidth}
+    \centering\color{gray}\large Espace réservé à une capture d'écran
+  \end{minipage}}
+  \caption{#2}
+  \end{figure}}
+
+\begin{document}
+
+% =============================================================================
+% PAGE DE GARDE
+% =============================================================================
+\begin{titlepage}
+\begin{center}
+{\large Royaume du Maroc}\par
+\vspace{0.3cm}
+{\Large\bfseries \Etablissement}\par
+{\large \Departement}\par
+{\large \Filiere}\par
+\vspace{1.2cm}
+\textcolor{tradiviablue}{\rule{\textwidth}{1.2pt}}\par
+\vspace{0.6cm}
+{\LARGE\bfseries Rapport de projet professionnel}\par
+\vspace{0.7cm}
+{\Huge\bfseries\color{tradiviablue}\TitreProjet}\par
+\vspace{0.5cm}
+\textcolor{tradiviagold}{\rule{0.75\textwidth}{2pt}}\par
+\vfill
+\begin{tabularx}{0.9\textwidth}{Y Y}
+\textbf{Réalisé par :} & \textbf{Encadré par :}\\[0.3cm]
+\Auteur & \Encadrant\\
+\end{tabularx}
+\vfill
+{\large Organisme d'accueil : \Entreprise}\par
+\vspace{0.25cm}
+{\large Année universitaire : \AnneeUniversitaire}
+\end{center}
+\end{titlepage}
+
+\pagenumbering{roman}
+\setcounter{page}{2}
+
+% =============================================================================
+% REMERCIEMENTS
+% =============================================================================
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+Je tiens à exprimer ma gratitude à toutes les personnes qui ont contribué à ce projet. Mes remerciements s'adressent en premier lieu à \Encadrant, pour son accompagnement, ses conseils et ses relectures attentives.
+
+Je remercie également l'équipe de \Entreprise{} pour la confiance accordée et pour sa disponibilité pendant l'analyse des besoins. Les échanges réalisés ont montré qu'un bon logiciel de gestion doit respecter les habitudes réelles de l'entreprise : un arrondi, un filtre ou une mise en page Word peuvent devenir très importants à l'usage.
+
+J'adresse enfin mes remerciements aux enseignants, aux membres du jury, ainsi qu'à mes proches pour leur soutien.
+
+% =============================================================================
+% RÉSUMÉ & ABSTRACT
+% =============================================================================
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+La gestion quotidienne d'une société commerciale comme \Entreprise{} demande de suivre plusieurs informations en même temps : clients, factures, règlements, conteneurs, charges et documents bancaires. Lorsque ces données restent dispersées entre Excel, Word et des dossiers locaux, le travail devient lent et les erreurs de saisie sont plus faciles à commettre.
+
+Ce projet présente \textbf{Tradivia System}, une application web locale conçue pour regrouper ces tâches dans un seul outil. Elle permet de gérer les clients, y compris les personnes physiques, de créer des factures, de suivre leur paiement, d'enregistrer les charges, de contrôler les conteneurs et de générer les documents Word/PDF nécessaires à l'activité. Un module d'anomalies complète le système en signalant les doublons, les écarts de TVA, les formats suspects ou les différences de poids.
+
+La solution repose sur React et Vite pour l'interface, Express pour l'API et SQLite pour le stockage local. Les documents sont générés par des scripts Python qui réutilisent les modèles Word de l'entreprise.
+
+\textbf{Mots-clés :} gestion commerciale, React, Express, SQLite, génération documentaire, détection d'anomalies, facturation, suivi de conteneurs, fiscalité locale.
+
+\begin{otherlanguage}{english}
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+The daily operations of a trading company involve customers, invoices, payments, containers, expenses, and banking documents. When these records are scattered across spreadsheets and manually filled Word files, mistakes become more likely and follow-up takes more time.
+
+This report presents \textbf{Tradivia System}, a local web application created to centralize \Entreprise's workflow. It includes customer management, invoice tracking, container monitoring, expense records, transfer order generation and a rule-based anomaly center.
+
+The project uses React and Vite for the interface, Express for the API and SQLite for local persistence. Document generation is handled with Python scripts and the company's existing Word templates.
+
+\textbf{Keywords:} business management, React, Express, SQLite, document automation, anomaly detection, invoicing, container tracking, local taxation.
+\end{otherlanguage}
+
+% =============================================================================
+% LISTE DES ABRÉVIATIONS
+% =============================================================================
+\chapter*{Liste des abréviations}
+\addcontentsline{toc}{chapter}{Liste des abréviations}
+\begin{longtable}{p{3cm}p{11cm}}
+\textbf{API} & Application Programming Interface\\
+\textbf{B/L} & Bill of Lading (Connaissement maritime)\\
+\textbf{CIN} & Carte d'Identité Nationale\\
+\textbf{CORS} & Cross-Origin Resource Sharing\\
+\textbf{CRUD} & Create, Read, Update, Delete\\
+\textbf{CSS} & Cascading Style Sheets / Contribution Sociale de Solidarité\\
+\textbf{DOCX} & Format Word Open XML\\
+\textbf{HT} & Hors Taxes\\
+\textbf{ICE} & Identifiant Commun de l'Entreprise\\
+\textbf{IBAN} & International Bank Account Number\\
+\textbf{IS} & Impôt sur les Sociétés\\
+\textbf{JWT} & JSON Web Token\\
+\textbf{MCD} & Modèle Conceptuel de données\\
+\textbf{MLD} & Modèle Logique de Données\\
+\textbf{PDF} & Portable Document Format\\
+\textbf{REST} & Representational State Transfer\\
+\textbf{RIB} & Relevé d'identité bancaire\\
+\textbf{SGBD} & Système de Gestion de Base de Données\\
+\textbf{SPA} & Single Page Application\\
+\textbf{SQL} & Structured Query Language\\
+\textbf{TTC} & Toutes Taxes Comprises\\
+\textbf{TVA} & Taxe sur la valeur ajoutée\\
+\textbf{UI/UX} & User Interface / User Experience\\
+\textbf{UML} & Unified Modeling Language\\
+\textbf{WAL} & Write-Ahead Logging (Mode de journalisation SQLite)\\
+\end{longtable}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+% =============================================================================
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+% =============================================================================
+La transformation numérique concerne aussi les petites structures. Une entreprise commerciale doit aujourd'hui suivre ses ventes, ses règlements, ses charges et ses documents avec la même rigueur qu'une grande organisation, mais sans forcément disposer d'un ERP lourd ou d'une équipe informatique dédiée.
+
+Dans le cas de \Entreprise, les opérations étaient réparties entre plusieurs supports : fichiers Excel, modèles Word, dossiers de pièces jointes et échanges manuels. Cette organisation fonctionnait, mais elle demandait beaucoup de vérifications et pouvait créer des écarts sur les montants, les filtres, les informations clients ou les documents générés.
+
+\textbf{Tradivia System} répond à ce besoin avec une application locale, simple à lancer et centrée sur les tâches réelles de l'entreprise : factures, clients, conteneurs, charges, comptabilité, ordres de virement et anomalies. Le but n'était pas de créer un logiciel spectaculaire, mais un outil fiable, pratique et assez clair pour être utilisé au quotidien.
+
+Ce rapport présente le contexte du projet, la méthode suivie, la modélisation, la réalisation technique, les écrans principaux, les tests et les limites actuelles de la solution.
+
+% =============================================================================
+\chapter{Contexte et Cadrage du Projet}
+% =============================================================================
+\section{Présentation de l'entreprise}
+\Entreprise{} est une SARL active dans le commerce et l'importation de marchandises. Elle achète des produits auprès de fournisseurs, suit leur acheminement par conteneur et les revend sur le marché local. Ses clients peuvent être des sociétés, identifiées notamment par l'ICE, ou des personnes physiques, pour lesquelles le CIN reste facultatif.
+
+\section{Analyse de l'existant et problématique}
+Avant le projet, l'entreprise utilisait surtout des outils bureautiques séparés. Cette méthode restait possible, mais elle montrait vite ses limites :
+
+\begin{itemize}
+  \item \textbf{Documents dispersés :} les pièces liées aux conteneurs, aux ventes et aux règlements n'étaient pas réunies dans un même espace.
+  \item \textbf{Calculs sensibles :} les montants HT, TVA et TTC devaient être vérifiés manuellement, surtout lorsqu'un total exact était demandé.
+  \item \textbf{Documents répétitifs :} les factures et les ordres de virement nécessitaient une recopie régulière des mêmes informations.
+\end{itemize}
+
+Face à ces limites, la problématique centrale du projet a été formulée ainsi :
+\begin{quote}
+\textit{Comment concevoir une application locale qui regroupe les ventes, les clients, les conteneurs, les charges et les documents de \Entreprise, tout en restant simple à utiliser et fiable dans ses calculs ?}
+\end{quote}
+
+\section{Objectifs et critères de réussite}
+Pour répondre à cette problématique, le projet s'est fixé les objectifs concrets suivants :
+\begin{enumerate}
+  \item \textbf{Centralisation :} Rassembler l'ensemble des données opérationnelles (clients, ventes, logistique, charges, banques) au sein d'une unique base de données relationnelle locale.
+  \item \textbf{Fidélité documentaire :} Automatiser la génération des factures unitaires, factures fusionnées et ordres de virement au format Word (DOCX) et PDF, en réutilisant les modèles historiques de l'entreprise.
+  \item \textbf{Fiabilité et traçabilité :} Intégrer un système automatisé capable d'analyser les données saisies à la volée pour alerter l'utilisateur sur les anomalies potentielles (doublons de facturation, écarts de poids sur les conteneurs, formats d'identifiants incorrects, incohérences de calcul de TVA ou dépenses anormales).
+  \item \textbf{Sécurité et autonomie :} Garantir un accès contrôlé par authentification (JWT), un stockage sécurisé des mots de passe (bcrypt) et une gestion simple des sauvegardes.
+\end{enumerate}
+
+Les critères retenus sont vérifiables : installation reproductible, démarrage des deux services, calculs arrondis à deux décimales, conservation exacte du total demandé, génération de fichiers valides et réussite des suites de tests. Aucun engagement chiffré de temps de réponse n'est avancé, car il dépend notamment du démarrage de Word ou de LibreOffice sur le poste utilisé.
+
+% =============================================================================
+\chapter{Planification et Méthodologie}
+% =============================================================================
+\section{Méthodologie de développement}
+Pour mener à bien ce projet dans le respect des contraintes métier, une démarche agile et incrémentale a été adoptée. Cette approche a permis de livrer en priorité les fonctionnalités les plus critiques, d'obtenir des retours utilisateurs rapides et d'ajuster l'implémentation au fur et à mesure. 
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=1.1cm and 0.8cm,box/.style={draw=tradiviablue,rounded corners,fill=lightblue,minimum width=2.5cm,minimum height=1cm,align=center},arr/.style={-Latex,thick,tradiviagold}]
+\node[box] (b) {Expression des\\Besoins};
+\node[box,right=of b] (c) {Modélisation\\\& Conception};
+\node[box,right=of c] (d) {Développement\\Incrémental};
+\node[box,below=of d] (t) {Validation\\\& Tests};
+\node[box,left=of t] (v) {Recette\\Métier};
+\node[box,left=of v] (a) {Ajustements\\\& Polissage};
+\draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(t);
+\draw[arr] (t)--(v); \draw[arr] (v)--(a); \draw[arr] (a)--(b);
+\end{tikzpicture}
+\caption{Cycle de développement agile et incrémental du projet}
+\end{figure}
+
+Cette démarche s'est notamment illustrée sur le module Clients. À l'origine, les particuliers étaient saisis manuellement dans chaque facture. Les essais ont montré qu'ils devaient devenir des fiches réutilisables, au même titre que les sociétés, tout en préservant les informations des factures antérieures. La modification a donc combiné évolution du formulaire, contrôle côté API et migration des données historiques identifiables.
+
+\section{Phases et lots de travaux}
+Le travail peut être relu en six phases fonctionnelles. Ce découpage décrit les dépendances entre les lots ; il ne prétend pas reconstruire un calendrier précis qui n'est pas tracé dans le dépôt :
+
+\begin{table}[H]\centering
+\caption{Découpage fonctionnel des lots de travaux}
+\begin{tabularx}{\textwidth}{p{1.2cm}Y p{3cm}}
+\toprule \textbf{Lot} & \textbf{Travaux associés} & \textbf{Dépendance principale}\\ \midrule
+L1 & Initialisation du socle technique, sécurité, configuration de SQLite & Aucune\\
+L2 & Répertoire unifié clients/personnes physiques, module de facturation & Socle et base\\
+L3 & Module logistique des conteneurs, poids, gestion des pièces jointes & Stockage de fichiers\\
+L4 & Module charges, gestion des virements TVA et bénéficiaires & Données métier\\
+L5 & Moteur d'anomalies, comptabilité et exercices & Factures et charges\\
+L6 & Tests automatisés, polissage UI, documentation et livraison & Ensemble des lots\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Matrice MoSCoW et priorisation du backlog}
+Pour guider les choix de développement lors des sprints, le backlog produit a été qualifié selon la méthode MoSCoW :
+
+\begin{itemize}
+  \item \textbf{Must Have (Indispensable) :} Authentification JWT sécurisée, répertoire de tiers unifié, deux modes de calcul de facture (quantité et total cible), exports unitaires PDF/Word, base SQLite persistante, hachage bcrypt.
+  \item \textbf{Should Have (Important) :} Centre de détection des anomalies, association de fichiers aux conteneurs, module d'enregistrement et d'analyse de charges déductibles, exports de factures groupées fusionnées.
+  \item \textbf{Could Have (Souhaitable) :} Indicateurs comptables recalculés selon le filtre actif du tableau, sélecteur de thème persistant (sombre/clair), gestion complète de la clôture comptable d'un exercice.
+  \item \textbf{Won't Have (Hors périmètre actuel) :} Assistant conversationnel IA (proposé en perspective), synchronisation bancaire automatique par API externe, portail de paiement client en ligne.
+\end{itemize}
+
+% =============================================================================
+\chapter{Analyse et Modélisation UML}
+% =============================================================================
+\section{Analyse des besoins fonctionnels}
+Les besoins fonctionnels expriment l'ensemble des interactions attendues entre les utilisateurs et l'application. Ils s'articulent autour de six grands modules logiques :
+
+\begin{longtable}{p{2cm}p{4cm}p{8.5cm}}
+\caption{Spécification détaillée des exigences fonctionnelles (BF)}\label{tab:bf}\\
+\toprule \textbf{Code} & \textbf{Module} & \textbf{Exigence fonctionnelle}\\ \midrule
+\endfirsthead
+\toprule \textbf{Code} & \textbf{Module} & \textbf{Exigence fonctionnelle}\\ \midrule
+\endhead
+BF01 & Authentification & L'utilisateur doit s'authentifier de manière sécurisée pour accéder à l'application. L'administrateur doit pouvoir créer et désactiver des comptes.\\
+BF02 & Tiers (Clients) & Le système doit gérer de manière unifiée les sociétés (avec ICE) et les particuliers (avec CIN optionnel).\\
+BF03 & Facturation & L'utilisateur doit pouvoir éditer une facture en choisissant entre le calcul basé sur le prix unitaire et la quantité, ou le calcul basé sur un total cible demandé.\\
+BF04 & Logistique & Le système doit permettre de suivre l'état d'avancement d'un conteneur, d'y lier des documents physiques et de mesurer les écarts de poids.\\
+BF05 & Trésorerie & L'utilisateur doit pouvoir enregistrer des charges, spécifier si elles sont déductibles, et générer des ordres de virement au format officiel.\\
+BF06 & Contrôle & Le système doit détecter automatiquement et justifier en temps réel les anomalies présentes dans les données.\\
+\bottomrule
+\end{longtable}
+
+\capturespace[5.4cm]{Espace prévu pour une capture de la page de connexion}
+
+\section{Modélisation conceptuelle de données}
+Le modèle conceptuel de données de Tradivia System s'organise autour d'entités métiers claires et fortement corrélées. Un soin particulier a été apporté à la table des \code{clients} : elle unifie les personnes morales (sociétés) et les personnes physiques (particuliers) au moyen d'un attribut de type (\code{client\_type}) et de contraintes d'intégrité conditionnelles, ce qui évite la création de structures de données redondantes.
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[entity/.style={draw=tradiviablue,rounded corners,fill=lightblue,minimum width=3.5cm,minimum height=1cm,align=center},rel/.style={-Latex,thick}]
+\node[entity] (cl) at (0,0) {\textbf{CLIENTS}\\(Sociétés \& Particuliers)};
+\node[entity,right=2.5cm of cl] (fa) {\textbf{FACTURES}\\(Quantité ou Total)};
+\node[entity,below=2cm of cl] (co) {\textbf{CONTAINERS}\\(Suivi Logistique)};
+\node[entity,right=2.5cm of co] (do) {\textbf{DOCUMENTS}\\(Pièces jointes)};
+\node[entity,right=2.5cm of fa] (ch) {\textbf{CHARGES}\\(Dépenses)};
+\node[entity,below=2cm of ch] (ex) {\textbf{EXERCICES}\\(Clôtures annuelles)};
+\draw[rel] (cl)--node[above,scale=0.8]{1,N}(fa);
+\draw[rel] (co)--node[above,scale=0.8]{1,N}(do);
+\draw[dashed] (fa)--(ex); \draw[dashed] (ch)--(ex);
+\end{tikzpicture}
+\caption{Vue conceptuelle simplifiée des entités de la base de données}
+\end{figure}
+
+Le Modèle Logique de Données (MLD) qui en découle matérialise ces choix :
+\begin{itemize}
+  \item \textbf{clients} (\underline{id}, name, client\_type, ice, cin, address, phone, email)
+  \item \textbf{factures} (\underline{id}, numero, date, clientId, client\_type, client\_nom\_manuel, designation, qte\_kg, pu\_ttc, montant\_ht, tva, pt\_ttc, ajustement\_arrondi, paid)
+  \item \textbf{containers} (\underline{id}, numero, scelle, type, fournisseur, port\_depart, port\_arrivee, date\_depart, date\_arrivee, nb\_sacs, poids\_total, poids\_commande, poids\_recu, bl, facture\_commerciale, statut)
+  \item \textbf{container\_documents} (\underline{id}, container\_id, original\_name, stored\_name, mime\_type, file\_size, uploaded\_at)
+  \item \textbf{charges} (\underline{id}, date, categorie, libelle, montant\_ht, tva, montant\_ttc, fournisseur, mode\_paiement, reference, deductible, notes)
+  \item \textbf{ordres\_virement\_zizi} (\underline{id}, date, montant, nom, rib, reference, notes, created\_at)
+  \item \textbf{exercices\_comptables} (\underline{annee}, statut, ca\_total, charges\_totales, resultat\_net, tva\_collectee, tva\_deductible, tva\_a\_payer, created\_at, updated\_at)
+\end{itemize}
+
+Le schéma SQLite conserve un champ \code{clientId} nullable pour rester compatible avec d'anciennes factures. Dans le parcours actif, l'API exige toutefois une fiche enregistrée, y compris pour une personne physique. Les anciens champs manuels sont conservés comme instantané d'identité et une migration rattache les personnes historiques lorsque cela est possible. La table des exercices n'est pas liée ligne par ligne aux ventes ou aux charges : l'année sert de clé lors du calcul et de l'actualisation d'une clôture.
+
+\section{Diagrammes de séquence majeurs}
+Les diagrammes de séquence illustrent la dynamique du système lors des opérations complexes qui font intervenir plusieurs couches logicielles.
+
+\subsection{Processus d'authentification et émission du jeton}
+Lorsqu'un utilisateur tente de se connecter, le frontend transmet les identifiants en clair au format JSON. L'API Express interroge la base de données pour extraire l'empreinte de mot de passe correspondante. Si celle-ci est validée, l'API génère un jeton signé et retourne les informations du profil au format JSON.
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[life/.style={draw=tradiviablue,fill=lightblue,minimum width=2.4cm,minimum height=0.8cm,align=center},msg/.style={-Latex,thick,tradiviagold}]
+\node[life] (u) at (0,0) {Utilisateur};
+\node[life] (w) at (4,0) {React UI};
+\node[life] (api) at (8,0) {Express API};
+\node[life] (db) at (12,0) {SQLite};
+\foreach \x in {u,w,api,db}{\draw[dashed] (\x.south)--++(0,-5.2);}
+\draw[msg] (0,-1)--node[above,scale=0.8]{Saisie identifiants}(4,-1);
+\draw[msg] (4,-1.8)--node[above,scale=0.8]{POST /api/auth/login}(8,-1.8);
+\draw[msg] (8,-2.6)--node[above,scale=0.8]{SELECT WHERE username}(12,-2.6);
+\draw[msg] (12,-3.4)--node[above,scale=0.8]{Mot de passe haché}(8,-3.4);
+\draw[msg] (8,-4.2)--node[above,scale=0.8]{Validation bcrypt \& signature JWT}(4,-4.2);
+\draw[msg] (4,-4.8)--node[above,scale=0.8]{Session ouverte et profil stocké}(0,-4.8);
+\end{tikzpicture}
+\caption{Diagramme de séquence dynamique d'authentification de session}
+\end{figure}
+
+\subsection{Processus de génération documentaire automatisée}
+Le traitement documentaire unitaire ou groupé suit un parcours de délégation strict. L'API Express ne traite pas directement le format DOCX ; elle prépare les variables au format JSON temporaire et pilote le cycle d'exécution du script Python.
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[life/.style={draw=tradiviablue,fill=lightblue,minimum width=2.4cm,minimum height=0.8cm,align=center},msg/.style={-Latex,thick,tradiviagold}]
+\node[life] (u) at (0,0) {Interface React};
+\node[life] (api) at (4,0) {Express API};
+\node[life] (py) at (8,0) {Worker Python\\(python-docx)};
+\node[life] (wd) at (12,0) {Automatisation COM\\(MS Word)};
+\foreach \x in {u,api,py,wd}{\draw[dashed] (\x.south)--++(0,-5.2);}
+\draw[msg] (0,-1)--node[above,scale=0.8]{POST /api/invoice}(4,-1);
+\draw[msg] (4,-1.8)--node[above,scale=0.8]{Écrit JSON temporaire}(8,-1.8);
+\draw[msg] (8,-2.6)--node[above,scale=0.8]{Remplace marqueurs dans DOCX}(8,-3.2);
+\draw[msg] (8,-3.8)--node[above,scale=0.8]{Lance la conversion si PDF}(12,-3.8);
+\draw[msg] (12,-4.4)--node[above,scale=0.8]{Génère PDF binaire}(4,-4.4);
+\draw[msg] (4,-4.9)--node[above,scale=0.8]{Envoi binaire \& Nettoyage temp}(0,-4.9);
+\end{tikzpicture}
+\caption{Diagramme de séquence de la génération documentaire unitaire ou groupée}
+\end{figure}
+
+À chaque génération, l'API travaille dans un répertoire temporaire distinct. Le fichier est renvoyé seulement après contrôle de son existence et, pour un PDF, de sa signature. Le répertoire temporaire est ensuite supprimé, y compris lorsqu'une erreur est remontée par Python, Word ou LibreOffice. Cette séquence explique pourquoi le téléchargement peut demander quelques secondes sans bloquer les autres opérations métier.
+
+% =============================================================================
+\chapter{Conception technique et réalisation}
+% =============================================================================
+\section{Architecture physique et points d'entrée réels}
+Cette section décrit l'application telle qu'elle fonctionne réellement dans son environnement local. Le dépôt contient encore des éléments d'une ancienne organisation ; il est donc utile de distinguer les fichiers actifs :
+
+\begin{itemize}
+  \item \textbf{API Express :} \sourcefile{apps/api/server.cjs}, exposée sur le port \code{3001}. Elle contient les routes, l'authentification, la base SQLite et la logique métier.
+  \item \textbf{Interface React :} servie par Vite sur le port \code{5173}. Le composant principal \sourcefile{App.jsx} regroupe encore plusieurs pages, ce qui représente une piste de refactorisation future.
+\end{itemize}
+
+La base active, localisée dans \sourcefile{apps/api/tradivia.db}, utilise le mode de journalisation \textbf{WAL (Write-Ahead Logging)} au moyen du pilote \code{better-sqlite3} :
+\begin{lstlisting}[language=Java,caption={Configuration de la base de données dans server.cjs}]
+const Database = require('better-sqlite3');
+const db = new Database(DATABASE_PATH);
+db.pragma('journal_mode = WAL');
+db.pragma('foreign_keys = ON');
+\end{lstlisting}
+
+Le mode WAL sépare les écritures en cours du fichier principal et améliore la coexistence entre lectures et écritures. Il convient au volume local visé, sans transformer SQLite en base destinée à une forte concurrence publique.
+
+\section{Algorithmes de calcul de facturation}
+La facturation utilise des quantités en kilogrammes et des prix unitaires TTC. Pour garder des montants cohérents, l'application propose deux modes de calcul :
+
+\subsection{Mode Quantité}
+L'utilisateur renseigne la quantité livrée (\(Q\)) et le prix unitaire TTC (\(PU_{TTC}\)). Les montants globaux sont déduits selon les formules d'extraction d'un taux de TVA inclus de 20\% :
+\begin{align}
+TTC &= Q \times PU_{TTC} \\
+TVA &= \frac{TTC}{6} \\
+HT &= TTC - TVA
+\end{align}
+
+\subsection{Mode Total Demandé (ou Ajusté)}
+Lorsqu'un client négocie un prix global fixe, le système calcule la quantité entière possible puis place l'écart dans \code{ajustement\_arrondi}. Cette logique permet de conserver le montant final demandé :
+\begin{align}
+Q_{sacs} &= \left\lfloor \frac{TTC_{nego}}{PU_{TTC}} \right\rfloor \\
+TTC_{intermediaire} &= Q_{sacs} \times PU_{TTC} \\
+Ajustement &= TTC_{nego} - TTC_{intermediaire} \\
+TTC_{final} &= TTC_{intermediaire} + Ajustement
+\end{align}
+
+Dans le document Word, cette différence apparaît comme une ligne d'ajustement. Le total final reste donc exactement celui demandé.
+
+\section{Moteur de détection des anomalies métier}
+Le module d'anomalies est accessible via \code{GET /api/anomalies}. Il fonctionne avec des règles métier simples et explicables, sans service IA externe :
+
+\begin{enumerate}
+  \item \textbf{Doublons de facturation :} même client, même date et même total TTC.
+  \item \textbf{Prix atypiques :} comparaison du prix unitaire avec la médiane historique de la même désignation.
+  \begin{equation}
+  R_{ratio} = \frac{PU_{TTC}}{Mediane(PU_{TTC})} \notin [0.55\,;\,1.45]
+  \end{equation}
+  Un minimum de trois observations est requis avant de déclencher ce contrôle.
+  \item \textbf{Écarts de poids :} comparaison entre le poids commandé et le poids reçu.
+  \begin{equation}
+  E_{poids} = \frac{|Poids_{recu} - Poids_{commande}|}{Poids_{commande}} \times 100
+  \end{equation}
+  Un écart supérieur à 1\% déclenche un avertissement ; au-delà de 5\%, l'alerte devient critique.
+  \item \textbf{Identifiants :} vérification du format ICE, CIN s'il est renseigné, RIB et IBAN.
+\end{enumerate}
+
+\capturespace[5.8cm]{Espace prévu pour une capture du centre des anomalies}
+
+\section{Chaîne de génération documentaire et d'exports groupés}
+Le worker documentaire remplit les modèles Word de l'entreprise avec les données saisies dans l'application. Le script \sourcefile{workers/documents/fill_template.py} remplace les variables même lorsqu'elles sont découpées par Microsoft Word en plusieurs segments internes. Il traite aussi les tableaux, en-têtes et pieds de page.
+
+Pour les exports groupés, \sourcefile{merge_invoices.py} prépare chaque facture puis assemble les pages dans un seul fichier. Le même principe est utilisé pour produire des documents téléchargeables en DOCX et en PDF.
+
+\capturespace[5.4cm]{Espace prévu pour une capture d'une facture PDF générée}
+
+% =============================================================================
+\chapter{Présentation de l'Interface Utilisateur}
+% =============================================================================
+\section{Identité visuelle et confort d'usage}
+L'interface a été pensée comme un outil de travail quotidien : claire, compacte et lisible. La police \emph{Inter} est utilisée pour la lecture, tandis que \emph{JetBrains Mono} sert aux montants, références et identifiants.
+
+La palette utilise un indigo principal (\code{\#5368D9}) et plusieurs tons complémentaires. Des couleurs spécifiques caractérisent les domaines métier :
+\begin{itemize}
+  \item \textbf{Bleu doux} pour la facturation et les encaissements ;
+  \item \textbf{Vert émeraude} pour le module logistique des conteneurs ;
+  \item \textbf{Ambre/Orange} pour l'enregistrement et l'évaluation des charges déductibles ;
+  \item \textbf{Rouge de sécurité} pour le centre d'anomalies, attirant immédiatement l'attention de l'opérateur en cas de saisie erronée.
+\end{itemize}
+
+L'application propose aussi un thème clair et un thème sombre. Le choix reste visible après connexion et il est conservé dans le navigateur.
+
+\capturespace[5.8cm]{Espace prévu pour une capture du tableau de bord principal}
+
+\section{Module de facturation et exports}
+L'écran de facturation rassemble les recherches, les indicateurs et les actions d'export. Les totaux affichés suivent toujours le filtre actif :
+\begin{figure}[H]\centering
+\fbox{\begin{minipage}{0.95\textwidth}
+\textbf{Tradivia System} \hfill [Thème : Sombre] [Admin] \\
+\hrule\medskip
+\textbf{Factures | Clients | Conteneurs | Charges | Virements | Comptabilité | Anomalies | Société} \\
+\medskip
+\textbf{Filtres : } [ Année : 2026 ] [ Client : Tous ] \hfill [ + Nouvelle Facture ] \\
+\medskip
+\begin{tabularx}{\textwidth}{|l|l|Y|r|c|r|}
+\hline
+\textbf{N° Facture} & \textbf{Date} & \textbf{Client / Société} & \textbf{Montant HT} & \textbf{Payé ?} & \textbf{Actions} \\
+\hline
+FAC-2026-008 & 22/08/2026 & Société Atlas & 14 500.00 DH & Oui & [DOCX] [PDF] \\
+FAC-2026-009 & 24/08/2026 & Mohamed A. & 8 200.00 DH & Non & [Payé] [PDF] \\
+\hline
+\end{tabularx}
+\medskip
+\textbf{Périmètre filtré actuel : } Total HT : 22 700.00 DH | En attente : 1 facture
+\end{minipage}}
+\caption{Représentation schématique simplifiée de l'écran de facturation}
+\end{figure}
+
+Les cartes Total TTC, Total HT et En attente ne calculent donc plus sur toute la base, mais uniquement sur les lignes visibles. De la même manière, un export groupé ne contient que les factures filtrées.
+
+\capturespace[5.4cm]{Espace prévu pour une capture réelle de la page Factures}
+
+\section{Module des conteneurs et documents joints}
+Chaque conteneur possède une fiche avec son itinéraire, son statut, ses poids et ses pièces jointes. Les fichiers sont stockés sur le disque et peuvent être consultés, téléchargés ou supprimés depuis l'application.
+
+\capturespace[5.4cm]{Espace prévu pour une capture de la page Conteneurs}
+
+\section{Module de trésorerie et ordres de virement}
+Le module Charges regroupe les dépenses par année et par catégorie. Il permet aussi de préciser si une charge est déductible, information utilisée dans le calcul de la TVA récupérable.
+
+Pour les transferts bancaires, l'ancienne nomenclature interne \enquote{ZIZI} a été remplacée par \textbf{Ordre de virement}. L'utilisateur saisit la date, le bénéficiaire, le RIB ou l'IBAN et le montant. Le système complète ensuite le modèle Word avec le montant en chiffres et en lettres.
+
+\capturespace[5.4cm]{Espace prévu pour une capture des Charges et ordres de virement}
+
+\section{Tableau de bord et clôture comptable}
+L'ancien onglet \enquote{Impôts} a été retiré pour éviter toute confusion avec une déclaration fiscale officielle. Le tableau de bord comptable garde seulement des indicateurs utiles au suivi interne :
+\begin{itemize}
+  \item Le calcul de la TVA collectée sur les factures enregistrées dans la période ;
+  \item La TVA récupérable (calculée uniquement sur les charges enregistrées et explicitement signalées comme éligibles à la déductibilité) ;
+  \item La TVA due ou le crédit de TVA à reporter pour la période en cours.
+\end{itemize}
+
+La page Exercices permet enfin d'enregistrer un instantané annuel. Elle sert au suivi et à la comparaison, sans remplacer un journal comptable officiel.
+
+\capturespace[5.4cm]{Espace prévu pour une capture de la Comptabilité}
+
+% =============================================================================
+\chapter{Sécurité, Tests et Validation}
+% =============================================================================
+\section{Mesures de sécurité opérationnelles}
+Le système de gestion Tradivia System intègre un socle de protection conçu pour sécuriser les données de l'entreprise sur son poste de travail local :
+\begin{itemize}
+  \item \textbf{Protection des accès : } L'authentification repose sur des jetons JSON Web Tokens (JWT) signés par l'API Express d'une durée de vie limitée à 8 heures. Le jeton de session est requis pour chaque requête d'accès ou d'action vers les ressources métier du serveur.
+  \item \textbf{Stockage sécurisé : } Les mots de passe des utilisateurs ne sont jamais stockés en clair dans la base SQLite. Ils font l'objet d'un hachage robuste avec le protocole bcrypt (facteur de coût défini à 10).
+  \item \textbf{Contrôle des privilèges : } Seul un compte disposant explicitement du rôle d'administrateur (\code{admin}) a l'autorisation d'accéder à la gestion des utilisateurs pour créer des comptes ou désactiver un utilisateur. L'administrateur ne peut pas désactiver son propre compte, garantissant ainsi qu'au moins un administrateur actif reste présent sur la plateforme.
+  \item \textbf{Limitation des téléversements : } Les documents associés aux conteneurs sont filtrés à l'arrivée par le middleware Multer : la taille d'un fichier est limitée à 50 Mo, et le serveur renomme automatiquement les fichiers stockés sur le disque à l'aide d'identifiants aléatoires uniques pour éviter tout risque d'exécution de script malveillant.
+\end{itemize}
+
+\section{Stratégie de tests et d'assurance qualité}
+La conformité fonctionnelle et technique de l'application est garantie par une suite de tests automatisés couvrant tous les parcours et règles de calcul sensibles :
+
+\begin{lstlisting}[language=bash,caption={Validation globale du système}]
+# Lancement de la suite de tests du serveur Node (8 tests unitaires/int.)
+npm test
+
+# Lancement des tests des workers documentaires Python (4 tests)
+python -m unittest discover -s workers/documents -p "test*.py" -v
+
+# Lancement de la compilation de production de l'interface React
+npm run build -w @tradivia/web
+\end{lstlisting}
+
+La suite de tests vérifie l'intégrité de la logique métier sur dix scénarios de recette clés :
+
+\begin{longtable}{p{1.3cm}p{5.3cm}p{6.2cm}p{2cm}}
+\caption{Matrice d'évaluation et plan de recette fonctionnelle}\label{tab:recette}\\
+\toprule
+\textbf{Code} & \textbf{Scénario de test} & \textbf{Résultat de validation attendu} & \textbf{Type}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Code} & \textbf{Scénario de test} & \textbf{Résultat de validation attendu} & \textbf{Type}\\
+\midrule
+\endhead
+T01 & Connexion d'un utilisateur valide & Émission du jeton JWT et ouverture de l'interface & Sécurité\\
+T02 & Connexion d'un utilisateur invalide & Rejet de l'authentification avec message d'erreur neutre & Sécurité\\
+T03 & Calcul facture de 100 kg à 12 DH TTC & TTC = 1 200,00 DH, TVA = 200,00 DH, HT = 1 000,00 DH & Algorithme\\
+T04 & Facture en mode Total Demandé & Calcul d'ajustement d'arrondi correct pour conserver le total & Algorithme\\
+T05 & Ajout d'un particulier sans CIN & Fiche créée avec CIN à NULL, utilisable en facture & Flexibilité\\
+T06 & Export d'un document Word & Remplacement correct des marqueurs sans résidu dans le texte & Documentaire\\
+T07 & Fusion de factures groupées & Assemblage de plusieurs pages DOCX sans perte de section & Documentaire\\
+T08 & Évaluation de doublons de facturation & Alerte critique émise par le centre d'anomalies & Contrôle\\
+T09 & Écart de poids de conteneur > 5\% & Alerte critique émise sur le panneau logistique & Contrôle\\
+T10 & Suppression de conteneur & Cascade SQL appliquée : suppression métadonnées et fichiers & Intégrité\\
+\bottomrule
+\end{longtable}
+
+Le bilan de cette validation confirme que l'ensemble des dix parcours de tests prioritaires s'exécutent avec succès. La compilation du frontend avec Vite s'achève sans erreur de typage ni avertissement de performance, garantissant la livraison d'une solution logicielle robuste et opérationnelle.
+
+% =============================================================================
+\chapter{Bilan Critique et Perspectives}
+% =============================================================================
+\section{Synthèse des résultats obtenus}
+Tradivia System fournit désormais un environnement commun pour les principales données administratives de \Entreprise. Les modules réalisés répondent aux objectifs de centralisation, de calcul et de génération documentaire définis dans le périmètre. 
+
+Les retours qui ont guidé les corrections ont surtout porté sur la continuité entre la saisie et le document final, ainsi que sur la portée exacte des filtres. Le centre d'anomalies complète ces contrôles en signalant les écarts de TVA, doublons potentiels et formats bancaires suspects. Il aide à la vérification, mais ne remplace pas la décision de l'utilisateur.
+
+\section{Limites techniques identifiées}
+L'analyse critique de l'implémentation actuelle met en évidence plusieurs améliorations nécessaires :
+\begin{itemize}
+  \item \textbf{Fichiers monolithiques : } Le fichier serveur \sourcefile{server.cjs} et le fichier d'interface \sourcefile{App.jsx} sont volumineux et intègrent de nombreuses responsabilités. Bien que cette centralisation ait accéléré la livraison, elle compliquera la maintenance à long terme. Une refactorisation par domaines d'activité (Clients, Factures, Logistique) est recommandée.
+  \item \textbf{Données de configuration figées : } Les coordonnées légales de \Entreprise{} (ICE, CNSS, Patente) qui apparaissent sur la page de profil et dans l'en-tête des factures générées sont codées de manière statique au sein de l'interface React. Elles devraient être stockées dans une table de paramétrage en base de données pour permettre leur mise à jour ultérieure sans modification de code source.
+  \item \textbf{Dépendance à Microsoft Word : } La conversion automatique des documents DOCX vers le format PDF sous Windows nécessite que l'application puisse piloter une instance de Microsoft Word installée en local via COM. Bien qu'une solution de secours LibreOffice soit intégrée, cette dépendance limite la portabilité du système vers des environnements de serveurs d'hébergement Linux standard.
+\end{itemize}
+
+\section{Perspectives d'évolution réalistes}
+Pour accompagner une évolution future de l'application, trois pistes peuvent être étudiées :
+\begin{enumerate}
+  \item \textbf{Intégration d'un module de rentabilité par conteneur : } Actuellement, les conteneurs suivent le transit des marchandises, tandis que les charges et les factures enregistrent les flux financiers de manière découplée. En associant explicitement les factures de vente et les charges logistiques (droits de douane, transports routiers) à un conteneur donné, le système pourra calculer et afficher en temps réel la marge bénéficiaire nette dégagée pour chaque opération d'importation.
+  \item \textbf{Création d'un simulateur de coût d'importation : } Un assistant d'estimation permettrait à l'utilisateur de simuler l'ensemble des frais d'importation prévisionnels d'un conteneur (cours des devises, taxes portuaires, douanes, frais d'approche) avant de s'engager auprès de ses fournisseurs internationaux.
+  \item \textbf{Module de rapprochement bancaire automatique : } Ce module permettrait d'importer les relevés d'opérations bancaires au format CSV standard afin de lettrer automatiquement les factures de vente marquées \enquote{payées} et de valider le règlement effectif des charges de l'entreprise, réduisant ainsi au maximum les travaux de pointage manuels.
+\end{enumerate}
+
+% =============================================================================
+\chapter*{Conclusion générale}
+\addcontentsline{toc}{chapter}{Conclusion générale}
+% =============================================================================
+Le développement de Tradivia System s'est inscrit dans une démarche progressive, guidée par des besoins métier concrets. Le projet a permis de concevoir, d'implémenter et de tester une solution locale de gestion commerciale et documentaire adaptée au périmètre actuel de \Entreprise.
+
+React et Express ont permis de faire évoluer rapidement l'interface et l'API. SQLite en mode WAL apporte une persistance locale simple à exploiter pour le volume visé. Le worker Python réutilise les modèles Word de l'entreprise, tandis que le centre d'anomalies ajoute une vérification explicable des données les plus sensibles.
+
+Au-delà des aspects purement techniques, ce travail a mis en lumière qu'un projet informatique réussi ne se mesure pas à la complexité de son architecture, mais à sa capacité à simplifier, fiabiliser et unifier concrètement les activités métier de ses utilisateurs. Les limites identifiées dessinent une feuille de route claire pour les futures itérations du système, jetant ainsi des bases solides pour accompagner durablement la transition numérique de \Entreprise.
+
+% =============================================================================
+% WEBOGRAPHIE
+% =============================================================================
+\renewcommand{\bibname}{Webographie}
+\addcontentsline{toc}{chapter}{Webographie}
+\begin{thebibliography}{9}
+\bibitem{react} React.js, \emph{Documentation de référence de la bibliothèque d'interfaces}, \url{https://react.dev/}.
+\bibitem{vite} Vite.js, \emph{Documentation officielle du compilateur et serveur de développement}, \url{https://vite.dev/}.
+\bibitem{express} Express.js, \emph{Documentation officielle de conception d'API REST Node.js}, \url{https://expressjs.com/}.
+\bibitem{sqlite} SQLite, \emph{Documentation technique de référence du moteur de base locale}, \url{https://www.sqlite.org/docs.html}.
+\bibitem{better-sqlite3} better-sqlite3, \emph{Documentation d'exploitation du pilote SQLite synchrone}, \url{https://github.com/WiseLibs/better-sqlite3}.
+\bibitem{jwt} JSON Web Token, \emph{Spécification standard de signature de jeton (IETF RFC 7519)}, \url{https://rfc-editor.org/rfc/rfc7519}.
+\bibitem{pythondocx} python-docx, \emph{Guide d'utilisation pour la manipulation de documents Word}, \url{https://python-docx.readthedocs.io/}.
+\bibitem{bootstrapicons} Bootstrap Icons, \emph{Catalogue officiel de la bibliothèque de glyphes et icônes}, \url{https://icons.getbootstrap.com/}.
+\end{thebibliography}
+
+% =============================================================================
+% ANNEXES
+% =============================================================================
+\appendix
+
+\chapter{Référence des principales routes de l'API active}
+L'API REST exposée par le fichier \sourcefile{apps/api/server.cjs} sur le port \code{3001} présente notamment les routes suivantes. À l'exception de la connexion, elles sont protégées par le middleware de vérification du jeton JWT :
+
+\small
+\begin{longtable}{p{1.7cm}p{5.8cm}p{6.5cm}}
+\caption{Principales routes de l'API Tradivia System}\\
+\toprule \textbf{Méthode} & \textbf{Point d'accès (Route)} & \textbf{Rôle technique}\\ \midrule
+\endfirsthead
+\toprule \textbf{Méthode} & \textbf{Point d'accès (Route)} & \textbf{Rôle technique}\\ \midrule
+\endhead
+POST & \code{/api/auth/login} & Connexion publique, retourne le profil et le jeton JWT\\
+GET & \code{/api/auth/me} & Valide le jeton et retourne le profil de l'utilisateur actif\\
+POST & \code{/api/auth/change-password} & Met à jour le mot de passe après contrôle d'empreinte\\
+GET & \code{/api/users} & Admin-only : Liste des comptes enregistrés\\
+POST & \code{/api/users} & Admin-only : Création d'un nouvel utilisateur avec bcrypt\\
+PUT & \code{/api/users/:id/deactivate} & Admin-only : Désactive un utilisateur de la plateforme\\
+GET & \code{/api/clients} & Retourne la liste unifiée des sociétés et particuliers\\
+POST & \code{/api/clients} & Crée une fiche société ou personne physique ; le CIN est optionnel\\
+PUT & \code{/api/clients/:id} & Met à jour une fiche (bloqué si changement de type actif)\\
+GET & \code{/api/factures} & Liste les factures ; les filtres visibles sont appliqués par le frontend\\
+POST & \code{/api/factures} & Enregistre une facture (mode quantité ou total cible)\\
+DELETE & \code{/api/factures} & Action groupée de suppression de plusieurs factures\\
+POST & \code{/api/factures/export-group} & Fusionne et exporte les factures filtrées visibles\\
+GET & \code{/api/containers} & Liste des conteneurs maritimes et informations logistiques\\
+POST & \code{/api/containers/:id/documents} & Téléversement de fichiers pièces jointes (Multer 50 Mo)\\
+GET & \code{/api/charges} & Liste des charges de l'entreprise\\
+GET & \code{/api/charges/stats} & Agrégats financiers mensuels et par catégorie de charges\\
+GET & \code{/api/ordres-virement-tva} & Liste et historique des ordres de virement TVA\\
+GET & \code{/api/ordres-virement-zizi} & Liste des ordres bénéficiaires (virements généraux)\\
+GET & \code{/api/comptabilite/dashboard} & Chiffre d'affaires, charges, marges et créances annuelles\\
+GET & \code{/api/comptabilite/tva} & Situation TVA par trimestre (collectée vs déductible)\\
+GET & \code{/api/comptabilite/impots} & Endpoint historique d'estimation, non exposé par un onglet dédié\\
+POST & \path{/api/comptabilite/exercices/:annee/cloturer} & Enregistre ou actualise l'instantané comptable de l'année\\
+GET & \code{/api/anomalies} & Construit le rapport des anomalies à l'instant T\\
+POST & \code{/api/invoice} & Génère la facture unitaire demandée au format PDF\\
+POST & \code{/api/invoice/docx} & Génère la facture unitaire demandée au format DOCX\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Guide technique d'installation locale}
+\begin{enumerate}
+  \item \textbf{Prérequis :} Installer Node.js (version 20 ou supérieure) et Python 3. Sous Windows, Microsoft Word doit être installé pour activer la conversion automatique des fichiers PDF via les bibliothèques d'automatisation COM de Windows.
+  \item \textbf{Installation des dépendances Python :} Depuis la racine du projet, exécuter la commande suivante dans PowerShell pour installer les bibliothèques nécessaires à la manipulation documentaire :
+  \begin{lstlisting}[language=bash]
+  pip install -r workers/documents/requirements.txt
+  \end{lstlisting}
+  \item \textbf{Installation des dépendances Node.js :} À la racine de l'espace de travail du projet, exécuter la commande :
+  \begin{lstlisting}[language=bash]
+  npm install
+  \end{lstlisting}
+  Cette unique commande installe l'ensemble des modules nécessaires au serveur Express et à la SPA React.
+  \item \textbf{Configuration des variables d'environnement :} Créer un fichier de configuration nommé \sourcefile{.env} à la racine du projet en s'inspirant de l'exemple fourni dans \sourcefile{.env.example}. Configurer le secret de signature JWT et le mot de passe d'administration initial :
+  \begin{lstlisting}[caption={Exemple de fichier .env standard}]
+  PORT=3001
+  JWT_SECRET=une-valeur-longue-et-aleatoire-de-signature
+  ADMIN_DEFAULT_PASSWORD=mot-de-passe-d-administration-solide
+  \end{lstlisting}
+  \clearpage
+  \item \textbf{Démarrage de l'application :} Ouvrir deux terminaux distincts et exécuter respectivement les scripts de développement pour lancer les deux serveurs :
+  \begin{lstlisting}[language=bash,caption={Lancement du serveur API Express (Terminal 1)}]
+  npm run dev:api
+  \end{lstlisting}
+  \begin{lstlisting}[language=bash,caption={Lancement du compilateur Vite 6 (Terminal 2)}]
+  npm run dev:web
+  \end{lstlisting}
+  L'application est alors accessible dans n'importe quel navigateur internet récent à l'adresse locale stable : \url{http://localhost:5173}.
+\end{enumerate}
+
+\end{document}

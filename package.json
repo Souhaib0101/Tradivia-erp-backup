@@ -1,0 +1,1 @@
+{"name":"tradivia-system-final","private":true,"workspaces":["apps/*"],"scripts":{"dev:api":"npm run dev -w @tradivia/api","dev:web":"npm run dev -w @tradivia/web","test":"npm run test -w @tradivia/api"},"engines":{"node":">=20"}}

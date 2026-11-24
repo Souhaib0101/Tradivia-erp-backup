@@ -1,0 +1,1 @@
+import {createInvoice,listInvoices} from './invoice.service.js';import {createInvoice as schema} from './invoice.schema.js';export const list=(req,res)=>res.json(listInvoices());export const create=(req,res,next)=>{try{res.status(201).json(createInvoice(schema.parse(req.body)));}catch(e){next(e);}};

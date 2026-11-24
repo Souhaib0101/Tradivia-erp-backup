@@ -1,0 +1,4 @@
+import {db} from '../../database/connection.js';import {AppError} from '../../shared/errors/AppError.js';
+const round=n=>Math.round((n+Number.EPSILON)*100)/100;
+export function createInvoice(input){const total=round(input.quantityKg*input.unitPriceTtc);const invoice={...input,amountHt:round(total-total/6),vat:round(total/6),totalTtc:total,roundingAdjustment:0};const q=db.prepare('INSERT INTO invoices(number,client_id,designation,quantity_kg,unit_price_ttc,amount_ht,vat,total_ttc,rounding_adjustment,issued_at) VALUES(@number,@clientId,@designation,@quantityKg,@unitPriceTtc,@amountHt,@vat,@totalTtc,@roundingAdjustment,@issuedAt)');const result=q.run({...invoice,issuedAt:new Date().toISOString().slice(0,10)});return db.prepare('SELECT * FROM invoices WHERE id=?').get(result.lastInsertRowid);}
+export const listInvoices=()=>db.prepare('SELECT i.*,c.name client_name FROM invoices i LEFT JOIN clients c ON c.id=i.client_id ORDER BY issued_at DESC').all();
